@@ -22,7 +22,8 @@ data Sprite =
 makeLenses ''Sprite
 
 data CharacterSprites =
-  CharacterSprites { _charStanding ∷ Sprite
+  CharacterSprites { _charFacingLeft ∷ Sprite
+                   , _charFacingRight ∷ Sprite
                    , _charRunningLeft ∷ Sprite
                    , _charRunningRight ∷ Sprite
                    }
