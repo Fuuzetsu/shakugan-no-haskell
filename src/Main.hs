@@ -6,49 +6,10 @@ module Main where
 import Control.Lens
 import Control.Monad.State.Strict
 import qualified Data.Map as M
-import qualified Data.Vector as V
 import FreeGame
 import Shakugan.Types
 import Shakugan.Util
-
-loadResources ∷ Game Resources
-loadResources = do
-  b ← readBitmap "data/images/backdrop_dark.png"
-  s ← readBitmap "data/images/shana.png"
-  let standingL = cropStandingLeft s
-      standingR = cropStandingRight s
-      runningR = cropRunningRight s
-      runningL = cropRunningLeft s
-  return $ Resources
-             { _charSprites = CharacterSprites
-                                { _charFacingLeft = Sprite standingL 0 0
-                                , _charFacingRight = Sprite standingR 0 0
-                                , _charRunningLeft = Sprite runningL 0 0
-                                , _charRunningRight = Sprite runningR 0 0
-                                }
-             , _backdrop = b
-             }
-  where
-    cropStandingLeft ∷ Bitmap → V.Vector Bitmap
-    cropStandingLeft b =
-      let (w, h, wo, ho) = (53, 60, 276, 10)
-      in V.generate 4 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
-
-    cropStandingRight ∷ Bitmap → V.Vector Bitmap
-    cropStandingRight b =
-      let (w, h, wo, ho) = (53, 60, 34, 10)
-      in V.generate 4 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
-
-    cropRunningRight ∷ Bitmap → V.Vector Bitmap
-    cropRunningRight b =
-      let (w, h, wo, ho) = (70, 52, 26, 89)
-      in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
-
-    cropRunningLeft ∷ Bitmap → V.Vector Bitmap
-    cropRunningLeft b =
-      let (w, h, wo, ho) = (70, 52, 20, 149)
-      in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
-
+import Shakugan.Load
 main ∷ IO ()
 main = void $ runGame Windowed b $ do
   setFPS 60
@@ -65,17 +26,36 @@ main = void $ runGame Windowed b $ do
     mainloop = do
       bd ← use (resources.backdrop)
       let (w, h) = bitmapSize bd & both %~ ((/ 2) . fromIntegral)
+          cs = animate 2 charSprites
+
       translate (V2 w h) $ bitmap bd
 
-      sl ← animate 2 charSprites charFacingLeft
-      sr ← animate 2 charSprites charFacingRight
-      rl ← animate 2 charSprites charRunningLeft
-      rr ← animate 2 charSprites charRunningRight
+      -- let actmap ∷ M.Map Key (GameLoop Bitmap)
+      --     actmap = M.fromList [ (KeyLeft, cs charRunningLeft)
+      --                         , (KeyRight, cs charRunningRight)
+      --                         ]
 
-      translate (V2 400 300) $ bitmap sl
-      translate (V2 330 300) $ bitmap sr
-      translate (V2 400 400) $ bitmap rl
-      translate (V2 330 400) $ bitmap rr
+      -- ks ← M.filter id <$> keyStates
+      -- con ← case M.toList $ M.intersection actmap ks of
+      --   (_, x):_ → x
+      --   _ → cs charFacingRight
+
+
+      sl ← cs charFacingLeft
+      sr ← cs charFacingRight
+      rl ← cs charRunningLeft
+      rr ← cs charRunningRight
+      fb ← cs (effects.effectFirebeam)
+      fba ← cs (effects.effectFireball)
+
+      translate (V2 400 200) $ bitmap sl
+      translate (V2 330 200) $ bitmap sr
+      translate (V2 400 300) $ bitmap rl
+      translate (V2 330 300) $ bitmap rr
+      translate (V2 365 400) $ bitmap fb
+      translate (V2 365 500) $ bitmap fba
+
+      -- translate (V2 365 200) $ bitmap con
 
       whenM (keyPress KeyEscape) $ quit .= True
       q ← use quit

@@ -21,11 +21,18 @@ data Sprite =
 
 makeLenses ''Sprite
 
+data Effects = Effects { _effectFireball ∷ Sprite
+                       , _effectFirebeam ∷ Sprite
+                       }
+
+makeLenses ''Effects
+
 data CharacterSprites =
   CharacterSprites { _charFacingLeft ∷ Sprite
                    , _charFacingRight ∷ Sprite
                    , _charRunningLeft ∷ Sprite
                    , _charRunningRight ∷ Sprite
+                   , _effects ∷ Effects
                    }
 
 makeLenses ''CharacterSprites

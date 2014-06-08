@@ -5,8 +5,10 @@
 module Shakugan.Util where
 
 import Control.Lens
+import qualified Data.Map as M
 import qualified Data.Vector as V
 import FreeGame
+import FreeGame.Class (keyStates)
 import Shakugan.Types
 
 -- | Gets next sprite in the animation, bumping the meta-data.
@@ -30,3 +32,6 @@ animate t f g = do
         else do
           resources.charSprites .= (cs & g .~ Sprite v (s + 1) 0)
           return $ v V.! s
+
+pressedKeys ∷ GameLoop [Key]
+pressedKeys = M.keys . M.filter id <$> keyStates
