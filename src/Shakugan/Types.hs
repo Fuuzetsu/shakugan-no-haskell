@@ -8,8 +8,29 @@ import qualified Data.Map as M
 import qualified Data.Vector as V
 import FreeGame
 
+
+makeLenses ''V.Vector
+
+-- | Collection of bitmaps with some meta-data to keep track of where
+-- we are.
+data Sprite =
+  Sprite { _spriteMaps ∷ V.Vector Bitmap -- ^ Vector of sprites for this graphic
+         , _spriteNext ∷ Int -- ^ Index of next sprite to render
+         , _spriteSince ∷ Int -- ^ Frames since sprite was changed
+         }
+
+makeLenses ''Sprite
+
+data CharacterSprites =
+  CharacterSprites { _charStanding ∷ Sprite
+                   , _charRunningLeft ∷ Sprite
+                   , _charRunningRight ∷ Sprite
+                   }
+
+makeLenses ''CharacterSprites
+
 data Resources =
-  Resources { _charSprites ∷ (V.Vector Bitmap, Int, Int)
+  Resources { _charSprites ∷ CharacterSprites
             , _backdrop ∷ Bitmap
             }
 

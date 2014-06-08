@@ -32,3 +32,4 @@ executable shakugan-no-haskell
   default-language:    Haskell2010
   other-modules:
     Shakugan.Types
+    Shakugan.Util
