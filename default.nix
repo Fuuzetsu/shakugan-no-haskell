@@ -1,0 +1,1 @@
+/home/shana/programming/nix-project-defaults/shakugan-no-haskell/default.nix
