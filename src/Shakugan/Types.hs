@@ -9,7 +9,7 @@ import qualified Data.Vector as V
 import FreeGame
 
 data Resources =
-  Resources { _charSprites ∷ V.Vector Bitmap
+  Resources { _charSprites ∷ (V.Vector Bitmap, Int, Int)
             , _backdrop ∷ Bitmap
             }
 

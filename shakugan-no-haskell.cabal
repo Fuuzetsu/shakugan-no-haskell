@@ -11,7 +11,9 @@ category:            Game
 build-type:          Simple
 cabal-version:       >=1.8
 data-files:
-  data/images/backdrop.jpeg
+  data/images/backdrop.png
+  data/images/backdrop_dark.png
+  data/images/shana.png
 
 executable shakugan-no-haskell
   main-is:           Main.hs
