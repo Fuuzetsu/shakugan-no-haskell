@@ -12,7 +12,7 @@ import           Shakugan.Types
 import           Shakugan.Util
 
 -- | Animate whole sprite specified by the lens twice a second.
-animateChar ∷ Lens' CharacterSprites Sprite -> GameLoop Bitmap
+animateChar ∷ Lens' CharacterSprites Sprite → GameLoop Bitmap
 animateChar = animate 2 charSprites
 
 -- | If we're jumping already, keep jumping in the same direciton.
