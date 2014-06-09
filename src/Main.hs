@@ -47,7 +47,9 @@ main = void $ runGame Windowed b $ do
       rr ← cs charRunningRight
       fb ← cs (effects.effectFirebeam)
       fba ← cs (effects.effectFireball)
+      sj ← animate 1 charSprites charJumpingRight
 
+      translate (V2 365 100) $ bitmap sj
       translate (V2 400 200) $ bitmap sl
       translate (V2 330 200) $ bitmap sr
       translate (V2 400 300) $ bitmap rl

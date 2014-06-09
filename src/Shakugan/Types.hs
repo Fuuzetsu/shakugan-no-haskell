@@ -32,6 +32,8 @@ data CharacterSprites =
                    , _charFacingRight ∷ Sprite
                    , _charRunningLeft ∷ Sprite
                    , _charRunningRight ∷ Sprite
+                   , _charJumpingRight ∷ Sprite
+                   , _charJumpingLeft ∷ Sprite
                    , _effects ∷ Effects
                    }
 
