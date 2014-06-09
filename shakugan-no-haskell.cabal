@@ -34,3 +34,4 @@ executable shakugan-no-haskell
     Shakugan.Load
     Shakugan.Types
     Shakugan.Util
+    Shakugan.CharacterControl
