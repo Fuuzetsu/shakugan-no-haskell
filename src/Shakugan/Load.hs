@@ -49,13 +49,37 @@ loadResources = do
 
     cropRunningRight ∷ Bitmap → V.Vector Bitmap
     cropRunningRight b =
-      let (w, h, wo, ho) = (70, 52, 26, 89)
-      in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
+      -- let (w, h, wo, ho) = (70, 52, 26, 89)
+      -- in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
+      let crp (w, h, wo, ho) = cropBitmap b (w, h) (wo, ho)
+          infixr 8 `c`
+          x `c` y = crp x `V.cons` y
+          f1  = (63, 52, 21, 89)
+          f2  = (63, 52, 92, 89)
+          f3  = (63, 52, 167, 89)
+          f4  = (63, 52, 239, 89)
+          f5  = (63, 52, 310, 89)
+          f6  = (63, 52, 383, 89)
+          f7  = (63, 52, 452, 89)
+          f8  = (63, 52, 517, 89)
+      in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6 `c` f7 `c` f8 `c`  V.empty
 
     cropRunningLeft ∷ Bitmap → V.Vector Bitmap
     cropRunningLeft b =
-      let (w, h, wo, ho) = (70, 52, 20, 149)
-      in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
+      -- let (w, h, wo, ho) = (70, 52, 20, 149)
+      -- in V.generate 8 (\d → cropBitmap b (w, h) (wo + (w * d), ho))
+      let crp (w, h, wo, ho) = cropBitmap b (w, h) (wo, ho)
+          infixr 8 `c`
+          x `c` y = crp x `V.cons` y
+          f1  = (63, 52, 27,  149)
+          f2  = (63, 52, 92,  149)
+          f3  = (63, 52, 166, 149)
+          f4  = (63, 52, 237, 149)
+          f5  = (63, 52, 308, 149)
+          f6  = (63, 52, 379, 149)
+          f7  = (63, 52, 452, 149)
+          f8  = (63, 52, 519, 149)
+      in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6 `c` f7 `c` f8 `c`  V.empty
 
     cropFirebeam ∷ Bitmap → V.Vector Bitmap
     cropFirebeam b =
