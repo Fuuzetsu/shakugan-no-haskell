@@ -18,6 +18,7 @@ loadResources = do
       firebeam = cropFirebeam s
       fireball = cropFireball s
       jumpR = cropJumpRight s
+      jumpL = cropJumpLeft s
   return $ Resources
              { _charSprites =
                   CharacterSprites
@@ -26,7 +27,7 @@ loadResources = do
                     , _charRunningLeft = Sprite runningL 0 0
                     , _charRunningRight = Sprite runningR 0 0
                     , _charJumpingRight = Sprite jumpR 0 0
-                    , _charJumpingLeft = Sprite jumpR 0 0
+                    , _charJumpingLeft = Sprite jumpL 0 0
                     , _effects = Effects
                                    { _effectFireball = Sprite fireball 0 0
                                    , _effectFirebeam = Sprite firebeam 0 0
@@ -101,5 +102,24 @@ loadResources = do
           f8  = (63, 100, 493, 691)
           f9  = (73, 72, 560, 719)
           f10 = (56, 49, 639, 742)
+      in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6
+         `c` f7 `c` f8 `c`f9 `c` f10 `c` V.empty
+
+
+    cropJumpLeft ∷ Bitmap → V.Vector Bitmap
+    cropJumpLeft b =
+      let crp (w, h, wo, ho) = cropBitmap b (w, h) (wo, ho)
+          infixr 8 `c`
+          x `c` y = crp x `V.cons` y
+          f1  = (56, 66, 1304, 725)
+          f2  = (49, 66, 1247, 725)
+          f3  = (49, 66, 1194, 725)
+          f4  = (58, 96, 1130, 695)
+          f5  = (74, 96, 1043, 695)
+          f6  = (60, 96, 974, 695)
+          f7  = (61, 98, 905, 693)
+          f8  = (63, 100, 838, 691)
+          f9  = (73, 72, 760, 719)
+          f10 = (56, 49, 698, 742)
       in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6
          `c` f7 `c` f8 `c`f9 `c` f10 `c` V.empty
