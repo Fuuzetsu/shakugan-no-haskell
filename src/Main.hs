@@ -3,6 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Main where
 
+import Control.Arrow
 import Control.Lens
 import Control.Monad.State.Strict
 import qualified Data.Map as M
@@ -18,7 +19,15 @@ main = void $ runGame Windowed b $ do
   setTitle "shakugan-no-haskell"
   clearColor $ Color 0 0 0 0
   r ← loadResources
-  let field' = Field { _player = Player M.empty RightD False False }
+  let field' = Field { _player = Player
+                                   { _keysHeld = M.empty
+                                   , _position = V2 100 500
+                                   , _facing = RightD
+                                   , _falling = False
+                                   , _jumping = False
+                                   }
+                     }
+
   evalStateT mainloop GameFrame { _resources = r
                                 , _field = field'
                                 , _quit = False
@@ -33,29 +42,9 @@ main = void $ runGame Windowed b $ do
       translate (V2 w h) $ bitmap bd
 
       con ← pressedKeys >>= characterControl
+      V2 px py ← use (field.player.position)
 
-      -- con ← case  of
-      --   (_, x):_ → x
-      --   _ → cs charFacingRight
-
-
-      -- sl ← cs charFacingLeft
-      -- sr ← cs charFacingRight
-      -- rl ← cs charRunningLeft
-      -- rr ← cs charRunningRight
-      -- fb ← cs (effects.effectFirebeam)
-      -- fba ← cs (effects.effectFireball)
-      -- sj ← animate 1 charSprites charJumpingRight
-
-      -- translate (V2 365 100) $ bitmap sj
-      -- translate (V2 400 200) $ bitmap sl
-      -- translate (V2 330 200) $ bitmap sr
-      -- translate (V2 400 300) $ bitmap rl
-      -- translate (V2 330 300) $ bitmap rr
-      -- translate (V2 365 400) $ bitmap fb
-      -- translate (V2 365 500) $ bitmap fba
-
-      translate (V2 365 200) $ bitmap con
+      translate (V2 (fromIntegral px) (fromIntegral py)) $ bitmap con
 
       whenM (keyPress KeyEscape) $ quit .= True
       q ← use quit

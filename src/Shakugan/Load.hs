@@ -11,14 +11,15 @@ loadResources ∷ Game Resources
 loadResources = do
   b ← readBitmap "data/images/backdrop_dark.png"
   s ← readBitmap "data/images/shana.png"
-  let standingL = cropStandingLeft s
-      standingR = cropStandingRight s
-      runningR = cropRunningRight s
-      runningL = cropRunningLeft s
-      firebeam = cropFirebeam s
-      fireball = cropFireball s
-      jumpR = cropJumpRight s
-      jumpL = cropJumpLeft s
+  let δ         = 5
+      standingL = stillMap $ cropStandingLeft s
+      standingR = stillMap $ cropStandingRight s
+      runningR  = V.map (\x → MovingBitmap x (V2 δ 0)) $ cropRunningRight s
+      runningL  = V.map (\x → MovingBitmap x (V2 (-δ) 0)) $ cropRunningLeft s
+      firebeam  = stillMap $ cropFirebeam s
+      fireball  = stillMap $ cropFireball s
+      jumpR     = stillMap $ cropJumpRight s
+      jumpL     = stillMap $ cropJumpLeft s
   return $ Resources
              { _charSprites =
                   CharacterSprites
@@ -123,3 +124,6 @@ loadResources = do
           f10 = (56, 49, 698, 742)
       in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6
          `c` f7 `c` f8 `c`f9 `c` f10 `c` V.empty
+
+    stillMap ∷ V.Vector Bitmap → V.Vector MovingBitmap
+    stillMap = V.map (\x → MovingBitmap x (V2 0 0))

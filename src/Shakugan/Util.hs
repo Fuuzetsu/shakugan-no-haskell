@@ -23,15 +23,18 @@ animate t f g = do
       if d < floor (60 / t / fromIntegral (V.length v))
       then do
         resources.charSprites .= (cs & g .~ Sprite v s (d + 1))
-        return $ v V.! s
+        runBitmap $ v V.! s
       else
         if s + 1 >= V.length v
         then do
           resources.charSprites .= (cs & g .~ Sprite v 0 0)
-          return $ v V.! s
+          runBitmap $ v V.! s
         else do
           resources.charSprites .= (cs & g .~ Sprite v (s + 1) 0)
-          return $ v V.! s
+          runBitmap $ v V.! s
+
+runBitmap ∷ MovingBitmap → GameLoop Bitmap
+runBitmap (MovingBitmap b pd) = field.player.position %= (^+^ pd) >> return b
 
 pressedKeys ∷ GameLoop [Key]
 pressedKeys = M.keys . M.filter id <$> keyStates

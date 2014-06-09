@@ -10,10 +10,17 @@ import FreeGame
 
 makeLenses ''V.Vector
 
+-- | Bitmaps with movement associated to with them.
+data MovingBitmap = MovingBitmap { _movingBitmap ∷ Bitmap
+                                 , _movementAmount ∷ V2 Int
+                                 }
+makeLenses ''MovingBitmap
+
 -- | Collection of bitmaps with some meta-data to keep track of where
 -- we are.
 data Sprite =
-  Sprite { _spriteMaps ∷ V.Vector Bitmap -- ^ Vector of sprites for this graphic
+  Sprite { _spriteMaps ∷ V.Vector MovingBitmap
+           -- ^ Vector of sprites for this graphic
          , _spriteNext ∷ Int -- ^ Index of next sprite to render
          , _spriteSince ∷ Int -- ^ Frames since sprite was changed
          }
@@ -46,6 +53,7 @@ makeLenses ''Direction
 
 
 data Player = Player { _keysHeld ∷ M.Map Key Int
+                     , _position ∷ V2 Int
                      , _facing ∷ Direction
                      , _falling ∷ Bool
                      , _jumping ∷ Bool
