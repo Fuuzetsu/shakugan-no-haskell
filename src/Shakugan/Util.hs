@@ -19,20 +19,23 @@ animate ∷ Double -- ^ How many times a second should the whole thing animate?
 animate t f g = do
   cs ← use $ resources.f
   case cs ^. g of
-    Sprite v s d →
-      if d < floor (60 / t / fromIntegral (V.length v))
-      then do
-        resources.charSprites .= (cs & g .~ Sprite v s (d + 1))
-        runBitmap $ v V.! s
-      else
-        if s + 1 >= V.length v
-        then do
-          resources.charSprites .= (cs & g .~ Sprite v 0 0)
-          runBitmap $ v V.! s
-        else do
-          resources.charSprites .= (cs & g .~ Sprite v (s + 1) 0)
-          runBitmap $ v V.! s
+    Sprite v s d → do
+      (resources.charSprites .=) $ cs & g .~
+        if d < floor (60 / t / fromIntegral (V.length v))
+        then Sprite v s (d + 1)
+        else if s + 1 >= V.length v
+             then Sprite v 0 0
+             else Sprite v (s + 1) 0
 
+      -- Don't want to change player position at each rendered frame,
+      -- just each individual sprite change.
+      if d == 0
+        then runBitmap $ v V.! s
+        else return $ v ^?! ix s . movingBitmap
+
+
+-- | Updates player position based by how much the current sprite
+-- dictates and returns the underlying 'Bitmap'.
 runBitmap ∷ MovingBitmap → GameLoop Bitmap
 runBitmap (MovingBitmap b pd) = field.player.position %= (^+^ pd) >> return b
 
