@@ -20,8 +20,13 @@ animate t f g = do
   cs ← use $ resources.f
   case cs ^. g of
     Sprite v s d → do
+      -- framerate / t = how many times faster/slower we need to go to play
+      -- the whole animation once every 60 rendering frames
+      -- framerate / t / length v = slice of time we have for each bitmap
+      fps ← fromIntegral <$> use targetFramerate
+      let timeForFrame = fps / t / fromIntegral (V.length v)
       (resources.charSprites .=) $ cs & g .~
-        if d < floor (60 / t / fromIntegral (V.length v))
+        if d < floor timeForFrame
         then Sprite v s (d + 1)
         else if s + 1 >= V.length v
              then Sprite v 0 0
@@ -30,14 +35,34 @@ animate t f g = do
       -- Don't want to change player position at each rendered frame,
       -- just each individual sprite change.
       if d == 0
-        then runBitmap $ v V.! s
+        then runBitmap (1 / timeForFrame) $ v V.! s
         else return $ v ^?! ix s . movingBitmap
 
 
--- | Updates player position based by how much the current sprite
--- dictates and returns the underlying 'Bitmap'.
-runBitmap ∷ MovingBitmap → GameLoop Bitmap
-runBitmap (MovingBitmap b pd) = field.player.position %= (^+^ pd) >> return b
+-- | Updates player position based on how many rendering frames it
+-- visible and how much we need to have moved by the end of this time.
+-- Returns the frame that needs to be currently displayed.
+--
+-- Moving a little bit every rendered frame rather than moving a
+-- big chunk at the start of a single sprite makes movement much
+-- smoother.
+runBitmap ∷ Double -- ^ How big of a of the position we should use.
+          → MovingBitmap -- ^ Bitmap to use
+          → GameLoop Bitmap
+runBitmap s (MovingBitmap b pd) =
+  field.player.position %= (^+^ pd ^* s) >> return b
 
 pressedKeys ∷ GameLoop [Key]
 pressedKeys = M.keys . M.filter id <$> keyStates
+
+-- | Draws a series of 'Bitmap's from 'Sprite' either horizontally or
+-- vertically including the offsets of the sprites.
+drawSeries ∷ Bool -- ^ True = horizontal, False = vertical
+           → Lens' GameFrame Sprite
+           → GameLoop ()
+drawSeries way l = do
+  Sprite v _ _ ← use l
+  let bms = zip [0 .. ] $ V.toList v
+      fv p = if way then V2 (100 + 80 * p) 100 else V2 100 (100 + 110 * p)
+      f (x, MovingBitmap b offs) = translate (offs ^+^ fv x) $ bitmap b
+  mapM_ f bms

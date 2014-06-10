@@ -3,7 +3,6 @@
 {-# LANGUAGE LambdaCase #-}
 module Main where
 
-import Control.Arrow
 import Control.Lens
 import Control.Monad.State.Strict
 import qualified Data.Map as M
@@ -15,7 +14,8 @@ import Shakugan.CharacterControl
 
 main ∷ IO ()
 main = void $ runGame Windowed b $ do
-  setFPS 60
+  let tf = 60
+  setFPS tf
   setTitle "shakugan-no-haskell"
   clearColor $ Color 0 0 0 0
   r ← loadResources
@@ -31,6 +31,7 @@ main = void $ runGame Windowed b $ do
   evalStateT mainloop GameFrame { _resources = r
                                 , _field = field'
                                 , _quit = False
+                                , _targetFramerate = tf
                                 }
   where
     mainloop ∷ GameLoop ()
@@ -41,12 +42,14 @@ main = void $ runGame Windowed b $ do
 
       translate (V2 w h) $ bitmap bd
 
+      pos ← use (field.player.position)
       con ← pressedKeys >>= characterControl
-      V2 px py ← use (field.player.position)
-
-      translate (V2 (fromIntegral px) (fromIntegral py)) $ bitmap con
+      translate pos $ bitmap con
+      -- drawSeries True (resources.charSprites.charJumpingRight)
 
       whenM (keyPress KeyEscape) $ quit .= True
+      whenM (keyPress KeyO) $ field.player.position .= V2 100 500
+
       q ← use quit
       tick
       unless q mainloop

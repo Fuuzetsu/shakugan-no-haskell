@@ -11,14 +11,14 @@ loadResources ∷ Game Resources
 loadResources = do
   b ← readBitmap "data/images/backdrop_dark.png"
   s ← readBitmap "data/images/shana.png"
-  let δ         = 5
+  let δ         = 40
       standingL = stillMap $ cropStandingLeft s
       standingR = stillMap $ cropStandingRight s
       runningR  = V.map (\x → MovingBitmap x (V2 δ 0)) $ cropRunningRight s
       runningL  = V.map (\x → MovingBitmap x (V2 (-δ) 0)) $ cropRunningLeft s
       firebeam  = stillMap $ cropFirebeam s
       fireball  = stillMap $ cropFireball s
-      jumpR     = stillMap $ cropJumpRight s
+      jumpR     = cropJumpRight s
       jumpL     = stillMap $ cropJumpLeft s
   return $ Resources
              { _charSprites =
@@ -112,21 +112,23 @@ loadResources = do
       in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6
          `c` f7 `c` f8 `c`f9 `c` f10 `c` f11 `c` f12 `c` V.empty
 
-    cropJumpRight ∷ Bitmap → V.Vector Bitmap
+    cropJumpRight ∷ Bitmap → V.Vector MovingBitmap
     cropJumpRight b =
       let crp (w, h, wo, ho) = cropBitmap b (w, h) (wo, ho)
           infixr 8 `c`
-          x `c` y = crp x `V.cons` y
-          f1  = (56, 66, 33, 725)
-          f2  = (49, 66, 97, 725)
-          f3  = (49, 66, 150, 725)
-          f4  = (58, 96, 206, 695)
-          f5  = (74, 96, 277, 695)
-          f6  = (60, 96, 359, 695)
-          f7  = (61, 98, 428, 693)
-          f8  = (63, 100, 493, 691)
-          f9  = (73, 72, 560, 719)
-          f10 = (56, 49, 639, 742)
+          x `c` y = x `V.cons` y
+          -- TODO: figure out offsets for the position taking care of
+          -- varied bitmap sizes
+          f1  = MovingBitmap (crp (56, 66, 33, 725))   (V2 0 0)      --crouch
+          f2  = MovingBitmap (crp (49, 66, 97, 725))   (V2 20 0)     -- run
+          f3  = MovingBitmap (crp (49, 66, 150, 725))  (V2 20 0)     --run
+          f4  = MovingBitmap (crp (58, 67, 205, 697))  (V2 20 (-54)) -- jump up
+          f5  = MovingBitmap (crp (74, 68, 277, 695))  (V2 30 (-2))  -- jumping side
+          f6  = MovingBitmap (crp (60, 81, 358, 696))  (V2 25 56)    --  jumping fall
+          f7  = MovingBitmap (crp (61, 98, 428, 693))  (V2 20 0)    -- ground contact
+          f8  = MovingBitmap (crp (63, 100, 493, 691)) (V2 20 0)     -- still falling
+          f9  = MovingBitmap (crp (73, 72, 560, 719))  (V2 5 0)      -- half crouch
+          f10 = MovingBitmap (crp (56, 49, 639, 742))  (V2 0 0)      -- crouch
       in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6
          `c` f7 `c` f8 `c`f9 `c` f10 `c` V.empty
 

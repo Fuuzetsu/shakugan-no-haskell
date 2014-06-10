@@ -12,7 +12,7 @@ makeLenses ''V.Vector
 
 -- | Bitmaps with movement associated to with them.
 data MovingBitmap = MovingBitmap { _movingBitmap ∷ Bitmap
-                                 , _movementAmount ∷ V2 Int
+                                 , _movementAmount ∷ V2 Double
                                  }
 makeLenses ''MovingBitmap
 
@@ -53,7 +53,7 @@ makeLenses ''Direction
 
 
 data Player = Player { _keysHeld ∷ M.Map Key Int
-                     , _position ∷ V2 Int
+                     , _position ∷ V2 Double
                      , _facing ∷ Direction
                      , _falling ∷ Bool
                      , _jumping ∷ Bool
@@ -67,7 +67,9 @@ makeLenses ''Field
 data GameFrame =
   GameFrame { _resources ∷ Resources
             , _field ∷ Field
-            , _quit ∷ Bool }
+            , _quit ∷ Bool
+            , _targetFramerate ∷ Int
+            }
 makeLenses ''GameFrame
 
 type GameLoop = StateT GameFrame Game
