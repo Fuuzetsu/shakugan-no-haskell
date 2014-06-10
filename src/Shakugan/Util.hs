@@ -32,11 +32,7 @@ animate t f g = do
              then Sprite v 0 0
              else Sprite v (s + 1) 0
 
-      -- Don't want to change player position at each rendered frame,
-      -- just each individual sprite change.
-      if d == 0
-        then runBitmap (1 / timeForFrame) $ v V.! s
-        else return $ v ^?! ix s . movingBitmap
+      runBitmap (1 / timeForFrame) $ v V.! s
 
 
 -- | Updates player position based on how many rendering frames it

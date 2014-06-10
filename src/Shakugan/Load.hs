@@ -11,7 +11,7 @@ loadResources ∷ Game Resources
 loadResources = do
   b ← readBitmap "data/images/backdrop_dark.png"
   s ← readBitmap "data/images/shana.png"
-  let δ         = 40
+  let δ         = 15
       standingL = stillMap $ cropStandingLeft s
       standingR = stillMap $ cropStandingRight s
       runningR  = V.map (\x → MovingBitmap x (V2 δ 0)) $ cropRunningRight s
