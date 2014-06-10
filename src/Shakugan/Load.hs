@@ -120,13 +120,13 @@ loadResources = do
           -- TODO: figure out offsets for the position taking care of
           -- varied bitmap sizes
           f1  = MovingBitmap (crp (56, 66, 33, 725))   (V2 0 0)      --crouch
-          f2  = MovingBitmap (crp (49, 66, 97, 725))   (V2 20 0)     -- run
-          f3  = MovingBitmap (crp (49, 66, 150, 725))  (V2 20 0)     --run
-          f4  = MovingBitmap (crp (58, 67, 205, 697))  (V2 20 (-54)) -- jump up
-          f5  = MovingBitmap (crp (74, 68, 277, 695))  (V2 30 (-2))  -- jumping side
-          f6  = MovingBitmap (crp (60, 81, 358, 696))  (V2 25 56)    --  jumping fall
-          f7  = MovingBitmap (crp (61, 98, 428, 693))  (V2 20 0)    -- ground contact
-          f8  = MovingBitmap (crp (63, 100, 493, 691)) (V2 20 0)     -- still falling
+          f2  = MovingBitmap (crp (49, 66, 97, 725))   (V2 10 0)     -- run
+          f3  = MovingBitmap (crp (49, 66, 150, 725))  (V2 10 0)     --run
+          f4  = MovingBitmap (crp (58, 67, 205, 697))  (V2 20 (-27)) -- jump up
+          f5  = MovingBitmap (crp (74, 68, 277, 695))  (V2 30 (-1))  -- jumping side
+          f6  = MovingBitmap (crp (60, 81, 358, 696))  (V2 25 14)    --  jumping fall
+          f7  = MovingBitmap (crp (61, 98, 428, 693))  (V2 20 14)    -- ground contact
+          f8  = MovingBitmap (crp (63, 100, 493, 691)) (V2 10 0)     -- still falling
           f9  = MovingBitmap (crp (73, 72, 560, 719))  (V2 5 0)      -- half crouch
           f10 = MovingBitmap (crp (56, 49, 639, 742))  (V2 0 0)      -- crouch
       in f1 `c` f2 `c` f3 `c` f4 `c` f5 `c` f6

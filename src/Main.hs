@@ -19,12 +19,14 @@ main = void $ runGame Windowed b $ do
   setTitle "shakugan-no-haskell"
   clearColor $ Color 0 0 0 0
   r ← loadResources
+  let mb = r ^. charSprites.charFacingRight.spriteMaps ^?! ix 0 ^. movingBitmap
   let field' = Field { _player = Player
                                    { _keysHeld = M.empty
                                    , _position = V2 100 500
                                    , _facing = RightD
                                    , _falling = False
                                    , _jumping = False
+                                   , _lastUsed = mb
                                    }
                      }
 

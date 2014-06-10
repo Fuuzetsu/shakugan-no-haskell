@@ -32,7 +32,21 @@ animate t f g = do
              then Sprite v 0 0
              else Sprite v (s + 1) 0
 
-      runBitmap (1 / timeForFrame) $ v V.! s
+      -- When transitioning between separate sprites of same animation
+      -- we want to make sure we compensate for varied height and
+      -- offset the position immediatelly otherwise it will look like
+      -- the taller sprites are falling under the ground level or the
+      -- smaller ones are floating.
+      b ← runBitmap (1 / timeForFrame) $ v V.! s
+      bl ← use (field.player.lastUsed)
+      when (d == 0) $ do
+        let (_, h) = bitmapSize b
+            (_, h') = bitmapSize bl
+            df = fromIntegral (h' - h) / 2
+        field.player.position %= (^+^ V2 0 df)
+        field.player.lastUsed .= b
+
+      return b
 
 
 -- | Updates player position based on how many rendering frames it
@@ -42,7 +56,7 @@ animate t f g = do
 -- Moving a little bit every rendered frame rather than moving a
 -- big chunk at the start of a single sprite makes movement much
 -- smoother.
-runBitmap ∷ Double -- ^ How big of a of the position we should use.
+runBitmap ∷ Double -- ^ How big of a chunk of the position we should use.
           → MovingBitmap -- ^ Bitmap to use
           → GameLoop Bitmap
 runBitmap s (MovingBitmap b pd) =

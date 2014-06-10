@@ -57,6 +57,7 @@ data Player = Player { _keysHeld ∷ M.Map Key Int
                      , _facing ∷ Direction
                      , _falling ∷ Bool
                      , _jumping ∷ Bool
+                     , _lastUsed ∷ Bitmap
                      }
 makeLenses ''Player
 
